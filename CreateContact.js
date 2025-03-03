@@ -1,15 +1,23 @@
-// Address Book Contact Class
+// AddressBook.js
+
 class Contact {
     constructor(firstName, lastName, address, city, state, zip, phone, email) {
-        if (!this.validateName(firstName)) throw new Error("Invalid First Name: Must start with a capital letter and be at least 3 characters long.");
-        if (!this.validateName(lastName)) throw new Error("Invalid Last Name: Must start with a capital letter and be at least 3 characters long.");
-        if (!this.validateAddress(address)) throw new Error("Invalid Address: Must be at least 4 characters long.");
-        if (!this.validateAddress(city)) throw new Error("Invalid City: Must be at least 4 characters long.");
-        if (!this.validateState(state)) throw new Error("Invalid State: Must be at least 4 characters long and contain only letters.");
-        if (!this.validateZip(zip)) throw new Error("Invalid Zip Code: Must be a 5 or 6 digit number.");
-        if (!this.validatePhone(phone)) throw new Error("Invalid Phone Number: Must be a 10-digit number.");
-        if (!this.validateEmail(email)) throw new Error("Invalid Email Format.");
-        
+        if (!this.validateName(firstName) || !this.validateName(lastName)) {
+            throw new Error("First and Last Name should start with a capital letter and have at least 3 characters.");
+        }
+        if (!this.validateAddress(address) || !this.validateAddress(city) || !this.validateAddress(state)) {
+            throw new Error("Address, City, and State should have at least 4 characters.");
+        }
+        if (!this.validateZip(zip)) {
+            throw new Error("Invalid Zip Code format.");
+        }
+        if (!this.validatePhone(phone)) {
+            throw new Error("Invalid Phone Number format.");
+        }
+        if (!this.validateEmail(email)) {
+            throw new Error("Invalid Email format.");
+        }
+
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
@@ -20,43 +28,40 @@ class Contact {
         this.email = email;
     }
 
+    toString() {
+        return `${this.firstName} ${this.lastName}, ${this.address}, ${this.city}, ${this.state} - ${this.zip}, Ph: ${this.phone}, Email: ${this.email}`;
+    }
+
     validateName(name) {
         return /^[A-Z][a-zA-Z]{2,}$/.test(name);
     }
 
     validateAddress(value) {
-        return /^[A-Za-z0-9 ]{4,}$/.test(value);
-    }
-
-    validateState(state) {
-        return /^[A-Za-z]{4,}$/.test(state);
+        return /^.{4,}$/.test(value);
     }
 
     validateZip(zip) {
-        return /^\d{5,6}$/.test(zip);
-    }
-
-    validateEmail(email) {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        return /^[0-9]{5,6}$/.test(zip);
     }
 
     validatePhone(phone) {
-        return /^\d{10}$/.test(phone);
+        return /^[0-9]{10}$/.test(phone);
+    }
+
+    validateEmail(email) {
+        return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
     }
 }
 
-// Address Book Class
 class AddressBook {
-    constructor() {
+    constructor(name) {
+        this.name = name;
         this.contacts = [];
     }
 
     addContact(contact) {
-        if (this.contacts.some(c => c.email === contact.email)) {
-            throw new Error("Contact with this email already exists.");
-        }
         if (this.contacts.some(c => c.firstName === contact.firstName && c.lastName === contact.lastName)) {
-            throw new Error("Duplicate Contact: A contact with the same name already exists.");
+            throw new Error("Contact with this name already exists!");
         }
         this.contacts.push(contact);
     }
@@ -65,82 +70,87 @@ class AddressBook {
         this.contacts = this.contacts.filter(contact => contact.email !== email);
     }
 
-    findContactByEmail(email) {
-        return this.contacts.find(contact => contact.email === email);
+    removeContactByName(firstName, lastName) {
+        this.contacts = this.contacts.filter(contact => contact.firstName !== firstName || contact.lastName !== lastName);
     }
 
-    findContactByName(name) {
-        return this.contacts.find(contact => contact.firstName.toLowerCase() === name.toLowerCase() || contact.lastName.toLowerCase() === name.toLowerCase());
+    updateContactByName(firstName, lastName, updatedDetails) {
+        let contact = this.contacts.find(contact => contact.firstName === firstName && contact.lastName === lastName);
+        if (!contact) throw new Error("Contact not found!");
+        Object.assign(contact, updatedDetails);
     }
 
-    deleteContactByName(name) {
-        const contactIndex = this.contacts.findIndex(contact => contact.firstName.toLowerCase() === name.toLowerCase() || contact.lastName.toLowerCase() === name.toLowerCase());
-        if (contactIndex !== -1) {
-            this.contacts.splice(contactIndex, 1);
-        } else {
-            throw new Error("Contact not found.");
-        }
+    searchContactsByCity(city) {
+        return this.contacts.filter(contact => contact.city === city);
     }
 
-    listContacts() {
-        return this.contacts;
+    searchContactsByState(state) {
+        return this.contacts.filter(contact => contact.state === state);
+    }
+
+    viewPersonsByCity(city) {
+        return this.contacts.filter(contact => contact.city === city).map(contact => contact.toString());
+    }
+
+    viewPersonsByState(state) {
+        return this.contacts.filter(contact => contact.state === state).map(contact => contact.toString());
+    }
+
+    getAllContacts() {
+        return this.contacts.map(contact => contact.toString());
     }
 
     getContactCount() {
         return this.contacts.length;
     }
-
-    filterContactsByCity(city) {
-        return this.contacts.filter(contact => contact.city.toLowerCase() === city.toLowerCase());
-    }
-
-    filterContactsByState(state) {
-        return this.contacts.filter(contact => contact.state.toLowerCase() === state.toLowerCase());
-    }
-
-    updateContact(name, newDetails) {
-        let contact = this.findContactByName(name);
-        if (contact) {
-            Object.assign(contact, newDetails);
-        } else {
-            throw new Error("Contact not found.");
-        }
-    }
 }
 
-// Address Book Collection Class
-class AddressBookCollection {
+class AddressBookSystem {
     constructor() {
         this.addressBooks = [];
     }
 
-    createNewAddressBook() {
-        const newAddressBook = new AddressBook();
-        this.addressBooks.push(newAddressBook);
-        return newAddressBook;
+    createAddressBook(name) {
+        if (this.addressBooks.some(book => book.name === name)) {
+            throw new Error("Address Book with this name already exists!");
+        }
+        let newBook = new AddressBook(name);
+        this.addressBooks.push(newBook);
     }
 
-    listAddressBooks() {
-        return this.addressBooks;
+    getAddressBook(name) {
+        return this.addressBooks.find(book => book.name === name);
     }
 }
 
-// Example Usage
-const addressBookCollection = new AddressBookCollection();
-const addressBook1 = addressBookCollection.createNewAddressBook();
-
+// Usage Example
 try {
-    const contact1 = new Contact("John", "Doe", "123 Street", "New York", "NewYork", "10001", "1234567890", "john.doe@example.com");
-    addressBook1.addContact(contact1);
-    console.log("Contacts in AddressBook1:", addressBook1.listContacts());
-    console.log("Number of Contacts:", addressBook1.getContactCount());
-    
-    console.log("Contacts in New York:", addressBook1.filterContactsByCity("New York"));
-    console.log("Contacts in NewYork state:", addressBook1.filterContactsByState("NewYork"));
+    let system = new AddressBookSystem();
+    system.createAddressBook("Personal");
+    system.createAddressBook("Work");
 
-    // Trying to add a duplicate contact
-    const contactDuplicate = new Contact("John", "Doe", "456 Avenue", "Los Angeles", "California", "90001", "0987654321", "john.duplicate@example.com");
-    addressBook1.addContact(contactDuplicate);
+    let personalBook = system.getAddressBook("Personal");
+    let workBook = system.getAddressBook("Work");
+
+    let contact1 = new Contact("John", "Doe", "123 Main St", "New York", "New York", "10001", "1234567890", "john.doe@example.com");
+    let contact2 = new Contact("Jane", "Smith", "456 Oak St", "Los Angeles", "California", "90001", "0987654321", "jane.smith@example.com");
+    
+    personalBook.addContact(contact1);
+    workBook.addContact(contact2);
+    
+    console.log("All Contacts in Personal Book:", personalBook.getAllContacts());
+    console.log("All Contacts in Work Book:", workBook.getAllContacts());
+    console.log("Number of contacts in Personal Book:", personalBook.getContactCount());
+    
+    console.log("Contacts in New York:", personalBook.viewPersonsByCity("New York"));
+    console.log("Contacts in California:", workBook.viewPersonsByState("California"));
+    
+    personalBook.updateContactByName("John", "Doe", { phone: "1112223333" });
+    console.log("Updated Contact in Personal Book:", personalBook.getAllContacts());
+    
+    personalBook.removeContactByName("John", "Doe");
+    console.log("All Contacts after deletion in Personal Book:", personalBook.getAllContacts());
+    console.log("Number of contacts in Personal Book after deletion:", personalBook.getContactCount());
 } catch (error) {
     console.error(error.message);
 }
