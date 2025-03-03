@@ -70,6 +70,15 @@ class AddressBook {
         return this.contacts.find(contact => contact.firstName.toLowerCase() === name.toLowerCase() || contact.lastName.toLowerCase() === name.toLowerCase());
     }
 
+    deleteContactByName(name) {
+        const contactIndex = this.contacts.findIndex(contact => contact.firstName.toLowerCase() === name.toLowerCase() || contact.lastName.toLowerCase() === name.toLowerCase());
+        if (contactIndex !== -1) {
+            this.contacts.splice(contactIndex, 1);
+        } else {
+            throw new Error("Contact not found.");
+        }
+    }
+
     listContacts() {
         return this.contacts;
     }
@@ -117,6 +126,10 @@ try {
     // Editing Contact
     addressBook1.updateContact("John", { phone: "9876543210", city: "Los Angeles" });
     console.log("Updated Contacts:", addressBook1.listContacts());
+    
+    // Deleting Contact
+    addressBook1.deleteContactByName("John");
+    console.log("Contacts after deletion:", addressBook1.listContacts());
 } catch (error) {
     console.error(error.message);
 }
