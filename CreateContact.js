@@ -96,12 +96,16 @@ class AddressBook {
         return this.contacts.filter(contact => contact.state === state).map(contact => contact.toString());
     }
 
-    getAllContacts() {
-        return this.contacts.map(contact => contact.toString());
-    }
-
     getContactCount() {
         return this.contacts.length;
+    }
+
+    getContactCountByCity(city) {
+        return this.contacts.filter(contact => contact.city === city).length;
+    }
+
+    getContactCountByState(state) {
+        return this.contacts.filter(contact => contact.state === state).length;
     }
 }
 
@@ -144,6 +148,8 @@ try {
     
     console.log("Contacts in New York:", personalBook.viewPersonsByCity("New York"));
     console.log("Contacts in California:", workBook.viewPersonsByState("California"));
+    console.log("Number of contacts in New York:", personalBook.getContactCountByCity("New York"));
+    console.log("Number of contacts in California:", workBook.getContactCountByState("California"));
     
     personalBook.updateContactByName("John", "Doe", { phone: "1112223333" });
     console.log("Updated Contact in Personal Book:", personalBook.getAllContacts());
