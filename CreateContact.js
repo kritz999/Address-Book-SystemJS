@@ -5,7 +5,7 @@ class Contact {
         if (!this.validateName(lastName)) throw new Error("Invalid Last Name: Must start with a capital letter and be at least 3 characters long.");
         if (!this.validateAddress(address)) throw new Error("Invalid Address: Must be at least 4 characters long.");
         if (!this.validateAddress(city)) throw new Error("Invalid City: Must be at least 4 characters long.");
-        if (!this.validateAddress(state)) throw new Error("Invalid State: Must be at least 4 characters long.");
+        if (!this.validateState(state)) throw new Error("Invalid State: Must be at least 4 characters long and contain only letters.");
         if (!this.validateZip(zip)) throw new Error("Invalid Zip Code: Must be a 5 or 6 digit number.");
         if (!this.validatePhone(phone)) throw new Error("Invalid Phone Number: Must be a 10-digit number.");
         if (!this.validateEmail(email)) throw new Error("Invalid Email Format.");
@@ -26,6 +26,10 @@ class Contact {
 
     validateAddress(value) {
         return /^[A-Za-z0-9 ]{4,}$/.test(value);
+    }
+
+    validateState(state) {
+        return /^[A-Za-z]{4,}$/.test(state);
     }
 
     validateZip(zip) {
@@ -80,13 +84,31 @@ class AddressBook {
     }
 }
 
+// Address Book Collection Class
+class AddressBookCollection {
+    constructor() {
+        this.addressBooks = [];
+    }
+
+    createNewAddressBook() {
+        const newAddressBook = new AddressBook();
+        this.addressBooks.push(newAddressBook);
+        return newAddressBook;
+    }
+
+    listAddressBooks() {
+        return this.addressBooks;
+    }
+}
+
 // Example Usage
-const addressBook = new AddressBook();
+const addressBookCollection = new AddressBookCollection();
+const addressBook1 = addressBookCollection.createNewAddressBook();
 
 try {
-    const contact1 = new Contact("John", "Doe", "123 Street", "New York", "NY", "10001", "1234567890", "john.doe@example.com");
-    addressBook.addContact(contact1);
-    console.log("Contacts:", addressBook.listContacts());
+    const contact1 = new Contact("John", "Doe", "123 Street", "New York", "NewYork", "10001", "1234567890", "john.doe@example.com");
+    addressBook1.addContact(contact1);
+    console.log("Contacts in AddressBook1:", addressBook1.listContacts());
 } catch (error) {
     console.error(error.message);
 }
