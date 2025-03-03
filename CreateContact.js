@@ -111,6 +111,18 @@ class AddressBook {
     sortContactsByName() {
         this.contacts.sort((a, b) => a.firstName.localeCompare(b.firstName));
     }
+
+    sortContactsByCity() {
+        this.contacts.sort((a, b) => a.city.localeCompare(b.city));
+    }
+
+    sortContactsByState() {
+        this.contacts.sort((a, b) => a.state.localeCompare(b.state));
+    }
+
+    sortContactsByZip() {
+        this.contacts.sort((a, b) => a.zip.localeCompare(b.zip));
+    }
 }
 
 class AddressBookSystem {
@@ -147,6 +159,10 @@ try {
     workBook.addContact(contact2);
     
     personalBook.sortContactsByName();
+    personalBook.sortContactsByCity();
+    personalBook.sortContactsByState();
+    personalBook.sortContactsByZip();
+    
     console.log("Sorted Contacts in Personal Book:", personalBook.contacts.map(contact => contact.toString()));
     
 } catch (error) {
