@@ -83,6 +83,10 @@ class AddressBook {
         return this.contacts;
     }
 
+    getContactCount() {
+        return this.contacts.length;
+    }
+
     filterContactsByCity(city) {
         return this.contacts.filter(contact => contact.city.toLowerCase() === city.toLowerCase());
     }
@@ -122,14 +126,17 @@ try {
     const contact1 = new Contact("John", "Doe", "123 Street", "New York", "NewYork", "10001", "1234567890", "john.doe@example.com");
     addressBook1.addContact(contact1);
     console.log("Contacts in AddressBook1:", addressBook1.listContacts());
+    console.log("Number of Contacts:", addressBook1.getContactCount());
     
     // Editing Contact
     addressBook1.updateContact("John", { phone: "9876543210", city: "Los Angeles" });
     console.log("Updated Contacts:", addressBook1.listContacts());
+    console.log("Number of Contacts:", addressBook1.getContactCount());
     
     // Deleting Contact
     addressBook1.deleteContactByName("John");
     console.log("Contacts after deletion:", addressBook1.listContacts());
+    console.log("Number of Contacts:", addressBook1.getContactCount());
 } catch (error) {
     console.error(error.message);
 }
