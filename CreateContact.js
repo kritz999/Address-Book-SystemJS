@@ -94,6 +94,10 @@ class AddressBook {
         return this.contacts.filter(contact => contact.city.toLowerCase() === city.toLowerCase());
     }
 
+    filterContactsByState(state) {
+        return this.contacts.filter(contact => contact.state.toLowerCase() === state.toLowerCase());
+    }
+
     updateContact(name, newDetails) {
         let contact = this.findContactByName(name);
         if (contact) {
@@ -131,6 +135,9 @@ try {
     console.log("Contacts in AddressBook1:", addressBook1.listContacts());
     console.log("Number of Contacts:", addressBook1.getContactCount());
     
+    console.log("Contacts in New York:", addressBook1.filterContactsByCity("New York"));
+    console.log("Contacts in NewYork state:", addressBook1.filterContactsByState("NewYork"));
+
     // Trying to add a duplicate contact
     const contactDuplicate = new Contact("John", "Doe", "456 Avenue", "Los Angeles", "California", "90001", "0987654321", "john.duplicate@example.com");
     addressBook1.addContact(contactDuplicate);
