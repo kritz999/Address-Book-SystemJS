@@ -62,8 +62,12 @@ class AddressBook {
         this.contacts = this.contacts.filter(contact => contact.email !== email);
     }
 
-    findContact(email) {
+    findContactByEmail(email) {
         return this.contacts.find(contact => contact.email === email);
+    }
+
+    findContactByName(name) {
+        return this.contacts.find(contact => contact.firstName.toLowerCase() === name.toLowerCase() || contact.lastName.toLowerCase() === name.toLowerCase());
     }
 
     listContacts() {
@@ -74,8 +78,8 @@ class AddressBook {
         return this.contacts.filter(contact => contact.city.toLowerCase() === city.toLowerCase());
     }
 
-    updateContact(email, newDetails) {
-        let contact = this.findContact(email);
+    updateContact(name, newDetails) {
+        let contact = this.findContactByName(name);
         if (contact) {
             Object.assign(contact, newDetails);
         } else {
@@ -109,6 +113,10 @@ try {
     const contact1 = new Contact("John", "Doe", "123 Street", "New York", "NewYork", "10001", "1234567890", "john.doe@example.com");
     addressBook1.addContact(contact1);
     console.log("Contacts in AddressBook1:", addressBook1.listContacts());
+    
+    // Editing Contact
+    addressBook1.updateContact("John", { phone: "9876543210", city: "Los Angeles" });
+    console.log("Updated Contacts:", addressBook1.listContacts());
 } catch (error) {
     console.error(error.message);
 }
