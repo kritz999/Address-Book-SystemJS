@@ -107,6 +107,10 @@ class AddressBook {
     getContactCountByState(state) {
         return this.contacts.filter(contact => contact.state === state).length;
     }
+
+    sortContactsByName() {
+        this.contacts.sort((a, b) => a.firstName.localeCompare(b.firstName));
+    }
 }
 
 class AddressBookSystem {
@@ -142,21 +146,9 @@ try {
     personalBook.addContact(contact1);
     workBook.addContact(contact2);
     
-    console.log("All Contacts in Personal Book:", personalBook.getAllContacts());
-    console.log("All Contacts in Work Book:", workBook.getAllContacts());
-    console.log("Number of contacts in Personal Book:", personalBook.getContactCount());
+    personalBook.sortContactsByName();
+    console.log("Sorted Contacts in Personal Book:", personalBook.contacts.map(contact => contact.toString()));
     
-    console.log("Contacts in New York:", personalBook.viewPersonsByCity("New York"));
-    console.log("Contacts in California:", workBook.viewPersonsByState("California"));
-    console.log("Number of contacts in New York:", personalBook.getContactCountByCity("New York"));
-    console.log("Number of contacts in California:", workBook.getContactCountByState("California"));
-    
-    personalBook.updateContactByName("John", "Doe", { phone: "1112223333" });
-    console.log("Updated Contact in Personal Book:", personalBook.getAllContacts());
-    
-    personalBook.removeContactByName("John", "Doe");
-    console.log("All Contacts after deletion in Personal Book:", personalBook.getAllContacts());
-    console.log("Number of contacts in Personal Book after deletion:", personalBook.getContactCount());
 } catch (error) {
     console.error(error.message);
 }
