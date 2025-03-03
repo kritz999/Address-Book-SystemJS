@@ -55,6 +55,9 @@ class AddressBook {
         if (this.contacts.some(c => c.email === contact.email)) {
             throw new Error("Contact with this email already exists.");
         }
+        if (this.contacts.some(c => c.firstName === contact.firstName && c.lastName === contact.lastName)) {
+            throw new Error("Duplicate Contact: A contact with the same name already exists.");
+        }
         this.contacts.push(contact);
     }
 
@@ -128,15 +131,9 @@ try {
     console.log("Contacts in AddressBook1:", addressBook1.listContacts());
     console.log("Number of Contacts:", addressBook1.getContactCount());
     
-    // Editing Contact
-    addressBook1.updateContact("John", { phone: "9876543210", city: "Los Angeles" });
-    console.log("Updated Contacts:", addressBook1.listContacts());
-    console.log("Number of Contacts:", addressBook1.getContactCount());
-    
-    // Deleting Contact
-    addressBook1.deleteContactByName("John");
-    console.log("Contacts after deletion:", addressBook1.listContacts());
-    console.log("Number of Contacts:", addressBook1.getContactCount());
+    // Trying to add a duplicate contact
+    const contactDuplicate = new Contact("John", "Doe", "456 Avenue", "Los Angeles", "California", "90001", "0987654321", "john.duplicate@example.com");
+    addressBook1.addContact(contactDuplicate);
 } catch (error) {
     console.error(error.message);
 }
